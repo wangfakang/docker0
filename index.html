@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Docker0 by wangfakang</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Docker0</h1>
+        <p class="header">docker Use guide </p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/wangfakang/docker0/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/wangfakang/docker0/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/wangfakang/docker0">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/wangfakang">wangfakang</a></p>
+
+
+      </header>
+      <section>
+        <p><code>docker的简单使用：
+</code></p>
+
+<p>#  docker相关的使用:</p>
+
+<h1>
+<a id="一docker的安装ubuntu-1404版本----" class="anchor" href="#%E4%B8%80docker%E7%9A%84%E5%AE%89%E8%A3%85ubuntu-1404%E7%89%88%E6%9C%AC----" aria-hidden="true"><span class="octicon octicon-link"></span></a>一.docker的安装(ubuntu 14.04版本)    </h1>
+
+<p>使用apt安装:<br>
+sudo apt-get install docker  (1.0.1)      </p>
+
+<h1>
+<a id="二简单的使用----" class="anchor" href="#%E4%BA%8C%E7%AE%80%E5%8D%95%E7%9A%84%E4%BD%BF%E7%94%A8----" aria-hidden="true"><span class="octicon octicon-link"></span></a>二.简单的使用    </h1>
+
+<p>部分命令的使用</p>
+
+<p>sudo docker pull dl.dockerpool.com:5000/ubuntu:12.04  进行获取相应的镜像<br>
+sudo docker images                                    列出本地的docker镜像<br>
+sudo docker run -t -i ubuntu:12.04 /bin/bash          使用docker运行一个容器<br>
+sudo docker rmi training/sinatra                      删除镜像    </p>
+
+<p>docker commit 24dd5b15abf2  docker/ubuntu 24dd5b15abf2  将一个container固化为一个新的image<br>
+docker push   id<br>
+docker pull id<br>
+docker search                                         搜索镜像</p>
+
+<p>docker pull [image]<br>
+docker run [image] [cmd]                               从指定image里生成一个container并在其中运行一个命令
+docker run -i -t [imag] [cmd]                          在container里运行交互式命令，比如shell
+docker run -d [image] [cmd]                            在container里运行后台任务</p>
+
+<p>docker start/stop/restart                   开启/停止/重启container<br>
+docker start -i                             启动一个container并进入交互模式<br>
+docker attach                               attach一个运行中的container<br>
+docker run                             使用image创建container并执行相应命令，然后停止<br>
+docker run -i -t  /bin/bash                     使用image创建container并进入交互模式, login shell是/bin/bash<br>
+docker run -i -t -p            将container的端口映射到宿主机的端口<br>
+docker commit  [repo:tag]                   将一个container固化为一个新的image，后面的repo:tag可选<br>
+docker build                                     寻找path路径下名为的Dockerfile的配置文件，使用此配置生成新的image<br>
+docker build -t repo[:tag]                             同上，可以指定repo和可选的tag<br>
+docker build - &lt;                           使用指定的dockerfile配置文件，docker以stdin方式获取内容，使用此配置生成新的image<br>
+docker port                 查看本地哪个端口映射到container的指定端口，其实用docker ps 也可以看到      </p>
+
+<p>docker images   查看镜像
+docker save    busybox-1 &gt; /home/save.tar              主要是用来进行保存进行的    </p>
+
+<p>docker ps -aq   查看容器
+docker export  &gt; /home/export.tar        是用来导出容器的    </p>
+
+<p>以上两个命令的区别是比较大的,其中save的结果会比export的结果大,save是进行image的保存,而export是对<br>
+容器的保存,而且save会保存整个进行的依赖关系,但是export不会的只是保存最终的提交所以也比较小一点.    </p>
+
+<p>docker rm $(docker ps -q -a) 一次性删除所有的容器<br>
+docker rmi $(docker images -q) 一次性删除所有的镜像。    </p>
+
+<p>导入容器:<br>
+cat /home/export.tar | sudo docker import -busybox-1 -export:latest<br>
+加载镜像:<br>
+docker load &lt; /home/save.tar</p>
+
+<h1>
+<a id="dockerfile的编写" class="anchor" href="#dockerfile%E7%9A%84%E7%BC%96%E5%86%99" aria-hidden="true"><span class="octicon octicon-link"></span></a>dockerfile的编写:</h1>
+
+<p>example one:
+<a href="https://github.com/pull" class="user-mention">@pull</a> down centos image
+<a href="https://github.com/FROM" class="user-mention">@FROM</a> :
+FROM centos                 #表示基础镜像来源
+MAINTAINER myu <a href="mailto:myu@live.cn">myu@live.cn</a>  #MAINTAINER命令用来指定维护者的姓名和联系方式</p>
+
+<p><a href="https://github.com/copy" class="user-mention">@copy</a> jdk and tomcat into image
+ADD ./apache-tomcat-7.0.52.tar.gz /root    #从src复制文件到container的dest路径:
+ADD ./jdk-7u51-linux-x64.tar.gz /root</p>
+
+<p><a href="https://github.com/set" class="user-mention">@set</a> environment variable
+ENV JAVA_HOME /root/jdk1.7.0_51  #用于设置环境变量
+ENV PATH $JAVA_HOME/bin:$PATH    #用于设置环境变量</p>
+
+<p><a href="https://github.com/define" class="user-mention">@define</a> entry point which will be run first when the container starts up
+ENTRYPOINT /root/apache-tomcat-7.0.52/bin/startup.sh &amp;&amp; tail -F /root/apacher-tomcat-7.0.52/logs/catalina.out</p>
+
+<p>example two:
+FROM ubuntu:test
+ENTRYPOINT echo "Welcome!"</p>
+
+<p>利用dockerfile进行创建image:
+docker build -t ubuntu:newtest - &lt; Dockerfile</p>
+
+<p>container 和 host 文件互相拷贝：</p>
+
+<p>1、从container往host拷贝文件：</p>
+
+<p>docker cp :/root/hello.txt .</p>
+
+<p>2、从host往container里拷贝文件，比较麻烦一点，首先停止Contaitner（当然不停止也能拷贝）</p>
+
+<p>docker stop </p>
+
+<p>然后执行拷贝操作，完成之后就可以在Contaitner里看到文件拉</p>
+
+<h1>
+<a id="三注意点" class="anchor" href="#%E4%B8%89%E6%B3%A8%E6%84%8F%E7%82%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>三.注意点</h1>
+
+<p>1.在进行commit的时候,只有在该容器没有退出的时候才会有效.<br>
+   2.save与export的区别,save是保存整个进行也有历史记录,而export只会保存当前容器.<br>
+   3.Docker attach可以attach到一个已经运行的容器的stdin，然后进行命令执行的动作,<br>
+     但是需要注意的是，如果从这个stdin中exit，会导致容器的停止。<br>
+   4.上述问题可以使用docker exec来进行解决,如docker exec -it bb2 /bin/sh,其中<br>
+     bb2是该容器的名称.    </p>
+
+<h2>
+<a id="有问题反馈" class="anchor" href="#%E6%9C%89%E9%97%AE%E9%A2%98%E5%8F%8D%E9%A6%88" aria-hidden="true"><span class="octicon octicon-link"></span></a>有问题反馈</h2>
+
+<p>在使用中有任何问题，欢迎反馈给我，可以用以下联系方式跟我交流</p>
+
+<ul>
+<li>邮件(1031379296#qq.com, 把#换成@)</li>
+<li>QQ: 1031379296</li>
+<li>weibo: <a href="http://weibo.com/u/2786211992/home">@王发康</a>
+</li>
+</ul>
+
+<h2>
+<a id="感激" class="anchor" href="#%E6%84%9F%E6%BF%80" aria-hidden="true"><span class="octicon octicon-link"></span></a>感激</h2>
+
+<h3>
+<a id="chunshengsteratgmailcom" class="anchor" href="#chunshengsteratgmailcom" aria-hidden="true"><span class="octicon octicon-link"></span></a>chunshengsterATgmail.com</h3>
+
+<h2>
+<a id="关于作者" class="anchor" href="#%E5%85%B3%E4%BA%8E%E4%BD%9C%E8%80%85" aria-hidden="true"><span class="octicon octicon-link"></span></a>关于作者</h2>
+
+<h3>
+<a id="linuxnginxgolangcc爱好者" class="anchor" href="#linuxnginxgolangcc%E7%88%B1%E5%A5%BD%E8%80%85" aria-hidden="true"><span class="octicon octicon-link"></span></a>Linux\nginx\golang\c\c++爱好者</h3>
+
+<h3>
+<a id="欢迎一起交流--一起学习" class="anchor" href="#%E6%AC%A2%E8%BF%8E%E4%B8%80%E8%B5%B7%E4%BA%A4%E6%B5%81--%E4%B8%80%E8%B5%B7%E5%AD%A6%E4%B9%A0" aria-hidden="true"><span class="octicon octicon-link"></span></a>欢迎一起交流  一起学习#</h3>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		          <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("docker guide  docker的简单使用");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
